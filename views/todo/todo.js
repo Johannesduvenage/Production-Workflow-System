@@ -15,7 +15,6 @@
 
 			model.todos = [];
 			model.$onInit = function(){
-					console.log("Todo Component loaded");
 					if($localStorage.todo){
 						model.todos = $localStorage.todo;
 					}

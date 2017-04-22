@@ -167,7 +167,7 @@
 				}
 			})
 			.when("/accounts/projectmanager", {
-					template: "<project-manager current-auth='$resolve.currentAuth' get-pm='$resolve.getUser' get-msgs-recieved='$resolve.getMessagesRecieved' get-msgs-sent='$resolve.getMessagesSent'></project-manager>",
+					template: "<project-manager current-auth='$resolve.currentAuth' get-pm='$resolve.getUser' get-msgs-recieved='$resolve.getMessagesRecieved' get-msgs-sent='$resolve.getMessagesSent' feedback='$resolve.getFeedbacks'></project-manager>",
 					resolve: {
 						currentAuth: function(auth){
 							return auth.$requireSignIn();
@@ -188,6 +188,14 @@
 							return auth.$requireSignIn().then(function(){
 								var uidKey = auth.$getAuth();
 								return $firebaseArray(DbReference.messageReference(uidKey.uid).child("sent")).$loaded();
+							});
+						},
+						getFeedbacks: function(auth, DbReference, $firebaseArray, $firebaseObject) {
+							return auth.$requireSignIn().then(function(){
+								var uidKey = auth.$getAuth();
+								return $firebaseObject(DbReference.getUser(uidKey.uid)).$loaded().then(function(data){
+									return $firebaseArray(DbReference.companyFeedback(data.company)).$loaded();
+								});
 							});
 						}
 					}

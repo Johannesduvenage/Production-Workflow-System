@@ -11,7 +11,8 @@
 			currentAuth: "=",
 			user: "=getPm",
 			msgsRec: "=getMsgsRecieved",
-			msgsSent: "=getMsgsSent"
+			msgsSent: "=getMsgsSent",
+			feeds: '=feedback'
 		},
 		controller: function($location, $sessionStorage, $firebaseArray, $firebaseObject, DbReference, DTOptionsBuilder){
 			var model = this;
@@ -22,7 +23,6 @@
 					model.companyPromise = $firebaseArray(DbReference.getCompanyByName(model.user.company).child("employees")).$loaded();
 					model.companyPromise.then(function(emp){
 						model.emps = emp;
-
 							model.employeesArray = [];
 							for(var i=0;i<model.emps.length;i++)
 								model.employeesArray.push(model.emps[i].name);

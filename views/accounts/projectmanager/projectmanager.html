@@ -9,39 +9,42 @@
 			<uib-tab-heading>Home <i class="glyphicon glyphicon-home"></i></uib-tab-heading>
 			<br><br>
 			<div class="row">
-				<div class="col-md-2" id="tabRep">
+				<div class="col-md-2" id="tabRep" ng-click="model.active = 4;">
 					<center>
 						<img src="images/png/man.png" class="img-responsive"> <span class="homeHeader"> Total Employees </span>
 						<hr id="sep">	
 						<span class="label label-info valueHeader">{{ model.emps.length }}</span>
 					</center>
 				</div>
-				<div class="col-md-2" id="tabRep">
+				<div class="col-md-2" id="tabRep" ng-click="model.active = 1;">
 					<center>
-						<img src="images/png/completed.png" class="img-responsive"> <span class="homeHeader"> Completed Files </span>
+						<img src="images/png/completed.png" class="img-responsive"> <span class="homeHeader"> UnAssigned Files </span>
 						<hr id="sep">	
-						<span class="label label-info"><span class="valueHeader">{{ model.completedfiles.length }}</span></span>
+						<span class="label label-info"><span class="valueHeader">{{ model.uncompletedfiles.length }}</span></span>
 					</center>
 				</div>
-				<div class="col-md-2" id="tabRep">
+				<div class="col-md-2" id="tabRep" ng-click="model.active = 2;">
 					<center>
-						<img src="images/png/notcompleted.png" class="img-responsive"> <span class="homeHeader"> Uncompleted Files</span>
+						<img src="images/png/notcompleted.png" class="img-responsive"> <span class="homeHeader"> Assigned Files</span>
 						<hr id="sep">	
-						<span class="label label-info"><span class="valueHeader">{{model.uncompletedfiles.length }}</span></span>
+						<span class="label label-info"><span class="valueHeader">{{model.assignedfiles.length }}</span></span>
 					</center>
 				</div>
-				<div class="col-md-2" id="tabRep">
+				<div class="col-md-2" id="tabRep" ng-click="model.active=5;">
 					<center>
 						<img src="images/png/star.png" class="img-responsive"> <span class="homeHeader"> Ratings</span>
 						<hr id="sep">	
-						<span class="label label-info"><span class="valueHeader">1</span></span>
+						<span class="label label-info"><span class="valueHeader">{{model.feeds.length}}</span></span>
 					</center>
 				</div>
-				<div class="col-md-2" id="tabRep">
+				<div class="col-md-2" id="tabRep" ng-click="model.active = 3;" popover-placement="bottom" uib-popover-html="'<b>Messages Recieved</b> : {{model.msgsRec.length}}
+																	<br>
+																	<b>Messages Sent</b> : {{model.msgsSent.length}}
+					'" popover-trigger="'mouseenter'" ng-click="model.active = 3">
 					<center>
 						<img src="images/png/msg.png" class="img-responsive"> <span class="homeHeader"> Messages</span>
 						<hr id="sep">	
-						<span class="label label-info"><span class="valueHeader">1</span></span>
+						<span class="label label-info"><span class="valueHeader">{{ model.msgsRec.length + model.msgsSent.length }}</span></span>
 					</center>
 				</div>
 			</div>
@@ -216,8 +219,82 @@
 		</uib-tab>
 		
 		<uib-tab index="4" ng-click="model.setActiveTab(model.active)">
-			<uib-tab-heading>Logs <i class="glyphicon glyphicon-th-list"></i></uib-tab-heading>
-			Showing Logs here!
+			<uib-tab-heading>Employees <i class="glyphicon glyphicon-user"></i></uib-tab-heading>
+			<div class="row">
+						<div class="col-md-12">
+							<div ng-show="model.emps.length === 0">
+								<center>
+									<img src="images/notFound.svg" class="img-responsive notfound">
+									<h3 id="Header">No Messages Recieved!</h3>
+								</center>
+							</div>
+							<div ng-show="model.emps.length !== 0">
+								<table datatable="ng" class="row-border hover">
+										<thead>
+											<tr>
+												<th>Sr. No</th>
+												<th>Employee Code</th>
+												<th>Employee Name</th>
+												<th>Employee Email</th>
+												<th>Employee UID</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr ng-repeat="employee in model.emps track by $index">
+												<td>{{$index}}</td>
+												<td>{{employee.ecode}}</td>
+												<td>{{employee.name}}</td>
+												<td>{{employee.email}}</td>
+												<td>{{employee.uidKey}}</td>
+											</tr>
+										</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
 		</uib-tab>
+
+		<uib-tab index="5" ng-click="model.setActiveTab(model.active)">
+			<uib-tab-heading>FeedBack <i class="glyphicon glyphicon-tags"></i></uib-tab-heading>
+			<div class="row">
+						<div class="col-md-12">
+							<div ng-show="model.feeds.length === 0">
+								<center>
+									<img src="images/notFound.svg" class="img-responsive notfound">
+									<h3 id="Header">No Messages Recieved!</h3>
+								</center>
+							</div>
+							<div ng-show="model.feeds.length !== 0">
+								<table datatable="ng" class="row-border hover">
+										<thead>
+											<tr>
+												<th>Sr.</th>
+												<th>File</th>
+												<th>Company Rating</th>
+												<th>Company Rating</th>
+												<th>Your Rating</th>
+												<th>Your Rating</th>
+												<th>Given by Name & Company</th>
+												<th>Time</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr ng-repeat="feed in model.feeds| orderBy:'feed.timestamp'">
+												<td>{{$index}}</td>
+												<td>{{feed.forFile}}</td>
+												<td>{{feed.companyRatingValue}}</td>
+												<td>{{feed.companyRatingText}}</td>
+												<td>{{feed.employeeRatingValue}}</td>
+												<td>{{feed.employeeRatingText}}</td>
+												<td>{{feed.givenByName + " of " + feed.givenByCompany + " company"}}</td>
+												<td>{{feed.timestamp | date: 'medium'}}</td>
+											</tr>
+										</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+		</uib-tab>
+		
 	</uib-tabset>
 </div>

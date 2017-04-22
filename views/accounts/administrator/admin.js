@@ -67,7 +67,6 @@
 				model.dtOptionsUnUsers = DTOptionsBuilder.newOptions() .withOption('order', [5, 'desc']);
 				model.dtOptionsFiles = DTOptionsBuilder.newOptions() .withOption('order', [3, 'desc']);
 				model.getFiles();
-				console.log("Ass", model.assignedFiles);
 			};
 
 			model.setActiveTab = function(index){

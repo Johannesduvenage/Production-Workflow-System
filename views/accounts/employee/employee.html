@@ -106,11 +106,44 @@
 		
 		<uib-tab index="2" ng-click="model.setActiveTab(model.active)">
 			<uib-tab-heading>FeedBack <i class="glyphicon glyphicon-tags"></i></uib-tab-heading>
-			<div>
-					<center>
-						<h2 id="Header">Feedback</h2>
-					</center>
-			</div>
+			<div class="row">
+						<div class="col-md-12">
+							<div ng-show="model.feeds.length === 0">
+								<center>
+									<img src="images/notFound.svg" class="img-responsive notfound">
+									<h3 id="Header">No Messages Recieved!</h3>
+								</center>
+							</div>
+							<div ng-show="model.feeds.length !== 0">
+								<table datatable="ng" class="row-border hover">
+										<thead>
+											<tr>
+												<th>Sr.</th>
+												<th>File</th>
+												<th>Company Rating</th>
+												<th>Company Rating</th>
+												<th>Your Rating</th>
+												<th>Your Rating</th>
+												<th style="width: 30%;">Given by Name & Company</th>
+												<th>Time</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr ng-repeat="feed in model.feeds| orderBy:'feed.timestamp'">
+												<td>{{$index}}</td>
+												<td>{{feed.forFile}}</td>
+												<td>{{feed.companyRatingValue}}</td>
+												<td>{{feed.companyRatingText}}</td>
+												<td>{{feed.employeeRatingValue}}</td>
+												<td>{{feed.employeeRatingText}}</td>
+												<td>{{feed.givenByName + " of " + feed.givenByCompany + " company"}}</td>
+												<td>{{feed.timestamp | date: 'medium'}}</td>
+											</tr>
+										</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
 		</uib-tab>
 		
 		<uib-tab index="3" ng-click="model.setActiveTab(model.active);">
