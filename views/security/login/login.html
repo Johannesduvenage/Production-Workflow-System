@@ -1,0 +1,51 @@
+<div class="container-fluid">
+	<br><br><br>
+	<div class="row" ng-init="model.login = false">
+		<div class="col-md-4 col-md-offset-4" id="loginForm">
+			
+			<!-- Login form here -->
+			<form role="form" id="formCss" name="loginform" novalidate="">
+			    <center>
+				   <h1 id="Header">{{model.header}}</h1>
+			    </center>
+			    <br><br>
+			  <div class="form-group" ng-class="{'has-error': loginform.username.$invalid && loginform.username.$touched}">
+			    <input type="email" class="form-control" id="emailAddress" ng-model="model.username" name="username" placeholder="Email address" autocomplete="off" required>
+				 <span id="error" ng-if="loginform.username.$invalid && loginform.username.$touched">Enter a valid email address.</span>
+			  </div>
+			  <div class="form-group" ng-class="{'has-error': loginform.password.$invalid && loginform.password.$touched}">
+			    <input type="password" class="form-control" id="Password" ng-model="model.password" name="password" placeholder="Password" required ng-minlength="8">
+				 <span id="error" ng-if="loginform.password.$invalid && loginform.password.$touched">Password too short (8 char max).</span>
+			  </div>
+			  <button type="submit" class="btn btn-primary btn-block" ng-disabled="loginform.$invalid" ng-hide="model.login" ng-click="model.signIn()">Login</button>
+			  <button type="submit" class="btn btn-primary btn-block" disabled ng-show="model.login">Signing in.. Wait</button>
+			</form>
+			<center><span ng-show="forget"><br><a href="#/security/forget">Forgot Password?</a></span></center>
+			<hr>
+			<div>
+			    <p><center>Don't have an account? <a href="#/security/register">Register</a></center></p>
+			</div>
+			<!-- end of login form -->
+			
+			
+			<hr>
+			<div>
+				<center><div id="getLinkApp"><a href="">Get the app.</a></div></center>
+				<br>
+				<div class="linkApp">
+					<center>
+						<img src="images/playstore.png" title="PlayStore (Android)" class="getApp">
+						<img src="images/apple.png" title="AppleStore (IOS)" class="getApp">
+					</center>
+				</div>
+			</div>
+			<br>
+		</div>
+	</div>
+</div>
+<footer></footer>
+<script type="text/javascript">
+	$("#getLinkApp").click(function(){
+		$(".linkApp").toggle();
+	});
+</script>

@@ -1,0 +1,299 @@
+<nav-component get-user='model.user'></nav-component>
+
+<br>
+<div cg-busy="{promise:model.downloadStatus,message:'Downloading.. Please wait.',backdrop: false}"></div>
+<div>
+	<uib-tabset active="model.active" justified="true">
+		<uib-tab index="0" ng-click="model.setActiveTab(model.active)">
+			<uib-tab-heading>Home <i class="glyphicon glyphicon-home"></i></uib-tab-heading>
+			<br><br>
+			<div class="row">
+				<div class="col-md-2" id="tabRep" ng-click="model.active = 1;">
+					<center>
+						<img src="images/png/file.png" class="img-responsive"> <span class="homeHeader"> Total Files</span>
+						<hr id="sep">	
+						<span class="label label-info valueHeader">{{ model.clientFiles.length }}</span>
+					</center>
+				</div>
+				<div class="col-md-2" id="tabRep" ng-click="model.active = 1;">
+					<center>
+						<img src="images/png/completed.png" class="img-responsive"> <span class="homeHeader"> Completed Files</span>
+						<hr id="sep">	
+						<span class="label label-info"><span class="valueHeader">{{ model.other.getCompletedFilesNumber() }}</span></span>
+					</center>
+				</div>
+				<div class="col-md-2" id="tabRep" ng-click="model.active = 1;">
+					<center>
+						<img src="images/png/download.png" class="img-responsive"> <span class="homeHeader"> Incomplete Files</span>
+						<hr id="sep">	
+						<span class="label label-info"><span class="valueHeader">{{ model.other.getNotCompletedFilesNumber() }}</span></span>
+					</center>
+				</div>
+				<div class="col-md-2" id="tabRep" ng-click="model.active = 3;" popover-placement="bottom" uib-popover-html="'<b>Messages Recieved</b> : {{model.msgsRec.length}}
+																	<br>
+																	<b>Messages Sent</b> : {{model.msgsSent.length}}
+					'" popover-trigger="'mouseenter'" ng-click="model.active = 3">
+					<center>
+						<img src="images/png/msg.png" class="img-responsive"> <span class="homeHeader"> Messages</span>
+						<hr id="sep">	
+						<span class="label label-info"><span class="valueHeader">{{ model.msgsRec.length + model.msgsSent.length }}</span></span>
+					</center>
+				</div>
+				<div class="col-md-2" id="tabRep">
+					<center>
+						<img src="images/png/upload.png" class="img-responsive"> <span class="homeHeader"> Total Upload Size</span>
+						<hr id="sep">	
+						<span class="label label-info"><span class="valueHeader">{{ model.other.uploadsize() }}</span></span>
+					</center>
+				</div>
+			</div>
+			<hr>
+			<div>
+					<todo-component></todo-component>
+			</div>
+		</uib-tab>
+		
+		
+		<uib-tab index="1" ng-click="model.setActiveTab(model.active)">
+			<uib-tab-heading>Files <i class="glyphicon glyphicon-file"></i></uib-tab-heading>
+			<center>
+				<h2 id="Header">Files Status</h2>
+			</center>
+			<div ng-show="model.clientFiles.length === 0">
+					<center>
+						<img src="images/notFound.svg" class="img-responsive notfound">
+						<h3 id="Header">No Files were uploaded by you!</h3>
+						<p><a href="" ng-click="model.setActiveTab(2)">Click here</a> to upload.</p>
+					</center>
+			</div>
+			<div class="row" ng-hide="model.clientFiles.length === 0">
+				<div class="col-md-12">
+					<table datatable="" class="row-border" dt-options="model.dtOptions">
+							<thead>
+								<tr>
+									<th>File UID</th>
+									<th>Assigned To Company</th>
+									<th>Deadline</th>
+									<th>Datasheet Size</th>
+									<th>LOV Sheet size</th>
+									<th><center><span class="label label-info">Progress</span></center></th>
+									<th><center><span class="label label-info">View more</span></center></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="file in model.clientFiles | orderBy: 'clientFiles.deadline'"
+										ng-class="{'deadlineNotify' : (file.deadline < model.date) && !(file.progress === file.total), 'doneFile': file.total==file.progress}"
+								>
+									<td>{{file.$id}}</td>
+									<td>{{file.assignedToCompany}}</td>
+									<td>{{file.deadline | date: "medium"}}</td>
+									<td>{{file.sizeDatasheet / 1024 | number:2 }} MB</td>
+									<td>{{file.sizeLovsheet / 1024 | number:2 }} MB</td>
+									<td><center><span class="label label-success">{{ (file.progress / file.total) * 100 | number:1 }} %</span></center></td>
+									<td>
+										<center>
+											<button class="btn btn-success" ng-show="((file.progress / file.total) * 100)===100.0" ng-click="model.downloadFile(file.$id, file.assignedToCompany)">
+												<span class="glyphicon glyphicon-cloud-download"></span>
+											</button>
+
+											<button class="btn btn-info" ng-click="model.getFileLogsNow(file.$id)">
+												<span class="glyphicon glyphicon-eye-open"></span>
+											</button>
+
+											<button class="btn btn-warning" ng-show="((file.progress / file.total) * 100)===100.0" ng-click="model.giveFeedback(file)">
+												<span class="glyphicon glyphicon-pencil"></span>
+											</button>
+										</center>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+				<!-- File Log Modal -->
+				<div data-remodal-id="fileLogModal">
+					<button data-remodal-action="close" class="remodal-close"></button>
+					<h3 id="Header">File Logs</h3>
+					<p>
+						<ol class="breadcrumb" ng-repeat="log in model.logFile">
+						  <li>{{log.log}} @ <span style="float: right;">&nbsp;<span class="label label-info">{{log.timeStamp | date: "dd MMMM, yyyy (EEEE) hh:mm:ss:(sss) a"}}</span></span></li>
+						</ol>
+					</p>
+					<button data-remodal-action="confirm" class="remodal-confirm">That's Cool!</button>
+				</div>
+				<!-- End of File Log Modal -->
+
+				<div class="modal fade" id="feedbackModal" role="dialog" aria-labelledby="feedbackModal">
+									<div class="modal-dialog">
+
+										<!-- Modal content-->
+										<div class="modal-content">
+											<div class="modal-header">
+												<button type="button" class="close" data-dismiss="modal">&times;</button>
+												<center><h4 class="modal-title">Feedback for File : <em><b>{{model.filename1}}</b></em></h4></center>
+											</div>
+											<div class="modal-body">
+												<form name="feedbackform" id="feedbackform" role="form">
+													<b>Assigned to Company  : </b> <em>{{model.fileFeedbackSave.assignedToCompany}}</em>
+													<hr>
+													<b>Assigned to Employee : </b> <em>{{model.fileFeedbackSave.assignedToEmployee}}</em>
+													<hr>
+													<b>Feedback : </b>
+													<br>
+														<div class="input-group">
+														  <span class="input-group-addon" id="basic-addon3">Feedback to {{model.fileFeedbackSave.assignedToCompany}}</span>
+														  <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3" ng-model="model.companyFeedback" required>
+														</div>
+														<br>
+														<div class="row">
+															<div class="col-md-2 col-md-offset-2">Rating</div>
+															<div class="col-md-7">
+																<span uib-rating ng-model="model.rateCompany" max="10" read-only="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null" titles="['one','two','three']" aria-labelledby="default-rating" required></span>
+																 - {{model.rateCompany}} <span ng-show="model.rateCompany">/ 10</span>
+															</div>
+														</div>
+													<br>
+														<div class="input-group">
+														  <span class="input-group-addon" id="basic-addon3">Feedback to Employee</span>
+														  <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3" ng-model="model.employeeFeedback" required>
+														</div>
+														<br>
+														<div class="row">
+															<div class="col-md-2 col-md-offset-2">Rating</div>
+															<div class="col-md-7">
+																<span uib-rating ng-model="model.rateEmployee" max="10" read-only="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null" titles="['one','two','three']" aria-labelledby="default-rating" required></span>
+																- {{model.rateEmployee}} <span ng-show="model.rateEmployee">/ 10</span>
+															</div>
+														</div>
+												</div>
+												<div class="modal-footer">
+													<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+													<button type="button" class="btn btn-primary" ng-click="model.giveFeedbackData()" ng-disabled="feedbackform.$invalid">Send Feedback</button>
+												</div>
+											</form>
+										</div>
+									</div>
+							    </div>
+				</div>
+
+			</div>
+		</uib-tab>
+		
+		<uib-tab index="2" ng-click="model.setActiveTab(model.active)">
+			<uib-tab-heading>Upload <i class="glyphicon glyphicon-upload"></i></uib-tab-heading>
+			<center>
+				<h2 id="Header">Uploader</h2>
+			</center>
+			<div class="row" ng-init="model.companyFlag='true';">
+				<div class="col-md-8 col-md-offset-2">
+					<div class="jumbotron">
+						<form class="form-horizontal" name="uploadForm">
+							<div class="form-group">
+							    	<label class="col-sm-3 control-label">Client</label>
+							    	<div class="col-sm-9">
+									<p class="form-control-static">{{ model.user.email }}</p>
+								</div>
+							</div>
+							<div class="form-group" ng-class="{'has-error': !model.companyFlag,
+													    	'has-success': model.companyFlag && uploadForm.$dirty
+													    }">
+								<label for="inputCompany" class="col-sm-3 control-label">Assign to Company</label>
+								<div class="col-sm-9 typeahead-demo">
+									<input type="text" class="form-control" id="searchCompany" placeholder="Enter Company Name" ng-model="model.selected" ng-required="true" uib-typeahead="company for company in model.companyNames  | filter:$viewValue | limitTo:8" ng-change="model.companySelectedVerify(model.selected)" autocomplete="off" autofocus  typeahead-on-select="model.companySelectedVerify(model.selected)">
+									<span id="helpBlock2" class="help-block" ng-show="!model.companyFlag">Please try to select the companies from the dropdown only.</span>
+								</div>
+							</div>
+							<div class="form-group" ng-class="{'has-error': model.fUIDFlag && uploadForm.$dirty && uploadForm.fuidinput.$dirty }">
+							    	<label class="col-sm-3 control-label">File Assignment Number <span class="label label-danger">Unique</label></span>
+							    	<div class="col-sm-9">
+										<input class="form-control" name="fuidinput" placeholder="Enter File Unique Assignment Number" type="text" ng-model="model.fUID" ng-change="model.checkFUID(model.fUID)" ng-required="true">
+
+										<span id="helpBlock2" class="help-block" ng-show="model.fUIDFlag">{{ model.fUID.toUpperCase() }} already present. <a href="#" ng-click="model.setActiveTab(1)">Please click here to look for details.</a></span>
+									</div>
+							</div>
+							<br>
+							<div class="form-group">
+								<label for="exampleInputFile" class="col-sm-3 control-label">Upload Data Sheet File <span class="label label-danger">.xlsx</span></label>
+								<div class="col-sm-offset-3 col-sm-9">
+									<input type="file" id="exampleInputFile" class="form-control" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" name="datasheetFileName" ngf-select ng-model="model.datasheetFile" required>
+								</div>
+							</div>
+							
+							
+							<div class="form-group">
+								<label for="exampleInputFile" class="col-sm-3 control-label">Upload LOV Sheet File <span class="label label-danger">.xlsx</span></label>
+								<div class="col-sm-offset-3 col-sm-9">
+									<input type="file" id="exampleInputFile" class="form-control" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ngf-select ng-model="model.lovFile" required>
+								</div>
+							</div>
+							
+							
+							<div class="form-group">
+								<label for="exampleInputFile" class="col-sm-3 control-label">Upload Images <span class="label label-danger">ZIP</span></label>
+								<div class="col-sm-offset-3 col-sm-9">
+									<input type="file" id="exampleInputFile" ngf-select class="form-control" accept=".zip" ng-model="model.imageZipFile" required>
+								</div>
+							</div>
+							
+							
+							<div class="form-group">
+								<label for="exampleInputFile" class="col-sm-3 control-label">Deadline <br><span class="label label-danger">Select Date from Button</span></label>
+								<div class="col-sm-offset-3 col-sm-9">
+									<p class="input-group">
+										<input type="text" readonly class="form-control" show-weeks="false" uib-datepicker-popup="longDate" ng-model="model.dt" is-open="model.isOpen" datepicker-options="model.dateOptions" ng-required="true" close-text="Close" popup-placement="auto bottom-right" />
+										<span class="input-group-btn">
+											<button type="button" class="btn btn-default" ng-click="model.openCalender()">
+												<i class="glyphicon glyphicon-calendar"></i>
+											</button>
+										</span>
+									</p>
+								</div>
+							</div>
+							<div class="form-group">
+							    	<label class="col-sm-3 control-label">Additional Information <span class="label label-info">Optional</label></span>
+							    	<div class="col-sm-9">
+										<input class="form-control" placeholder="Enter any additional information regarding the file. (OPTIONAL)" type="text" ng-model="model.additionalInfo" ng-required="true">
+									</div>
+							</div>
+							
+							<hr>
+							<div class="form-group">
+								<div class="col-sm-12">
+									<button type="submit" ng-disabled="uploadForm.$invalid" class="btn btn-primary btn-block" ng-click="model.onUpload()">Upload</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+
+			<!-- Upload Progress Bar Modal -->
+			<div data-remodal-id="modal">
+				<h1 ng-if="!model.status">Uploading..</h1><span class="label label-success" ng-if="model.status && model.successImages">Uploaded Successfully!</span>
+				<p>
+					<center><img src="images/uploading.gif" ng-hide="model.status && model.successImages" width="5%"></center>
+					<small><em>{{model.datasheetFile.name}}</em></small>
+    				<uib-progressbar class="progress-striped active" value="model.progressDatasheet" type="info"><b>{{model.progressDatasheet}}%</b></uib-progressbar>
+    				<br>
+    				<small><em>{{model.lovFile.name}}</em></small>
+    				<uib-progressbar class="progress-striped active" value="model.progressDatasheet" type="info"><b>{{model.progressLov}}%</b></uib-progressbar>
+    				<br>
+    				<small><em>{{model.imageZipFile.name}}</em></small>
+    				<uib-progressbar class="progress-striped active" value="model.progressImages" type="info"><b>{{model.progressImages}}%</b></uib-progressbar>
+				</p>
+
+				<div ng-init="model.status = false" ng-show="model.status && model.successImages" class="animated infinite rubberBand">
+					<center><em><h5>All the 3 files were uploaded successfully!<br>Please click the below button to see the files.</h5></em></center>
+				</div>
+  				<button data-remodal-action="confirm" class="remodal-confirm animated infinite jello" ng-init="model.status = false" ng-show="model.status && model.successImages" ng-click="model.setActiveTab(1)">That's Awesome!</button>
+			</div>
+			<!-- End of Progress Bar Modal -->
+		</uib-tab>
+		
+		<uib-tab index="3"  ng-click="model.setActiveTab(model.active);">
+			<uib-tab-heading>Messages <i class="glyphicon glyphicon-comment"></i></uib-tab-heading>
+			<br><br>
+			
+			    <message-component msgs-recieved="model.msgsRec" msgs-sent="model.msgsSent" user="model.user"></message-component>
+			
+		</uib-tab>
+	</uib-tabset>
+</div>

@@ -1,0 +1,151 @@
+
+
+#Header {
+	font-family: Lobster !important;
+}
+
+#loginForm {
+    box-shadow: 0px 0px 1px rgba(0,0,0,0.4);
+    border-radius: 0px;
+}
+
+input[type=email],
+    [type=password],
+    [type=number],
+    [type=text],
+    [type=file],
+    #role
+{
+    outline: none;
+    border: 1px solid rgba(0,0,0,0.1);
+    font-size: 13px;
+    border-radius: 0;
+}
+
+button[type=submit] {
+    background-color: #3897f0; 
+    border-color: #3897f0;
+    border-radius: 0;
+}
+.buttonType {
+    border-radius: 0 !important;
+    outline: none !important;
+}
+input[type=email]:focus,
+    [type=password]:focus,
+    [type=number]:focus,
+    [type=text]:focus,
+    [type=file]:focus,
+#role
+{
+    box-shadow: none;
+}
+
+.getApp {
+	
+}
+.linkApp {
+	display: none;
+}
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0; 
+}
+
+#error {
+    color: red;
+    padding: 10px;
+}
+
+#tabRep {
+	border: 0.5px solid rgba(0,0,0,0.1);
+	margin-left: 2.1em;
+	padding:10px;
+	box-shadow: 0.5px 0.5px 10px rgba(0,0,0,0.1);
+	transition: all .3s ease-in-out;
+}
+
+#tabRep:hover {
+	background-color: rgba(115, 115, 115, 0.1);
+	-ms-transform: scale(1.2, 1.2); /* IE 9 */
+    -webkit-transform: scale(1.2, 1.2); /* Safari */
+    transform: scale(1.2, 1.2);
+}
+#sep {
+    border-top: 1px solid #ccc;
+}
+
+.deadlineNotify {
+    background-color: #ffafaf !important;
+}
+.deadlineNotify:hover {
+    background-color: #ff5b6e !important;
+}
+
+
+.notfound {
+    width: 20%;
+    margin: 5%;
+}
+
+
+.product_images{
+    width: 20em;
+    height: 22em;
+}
+
+.gotoTop {
+    padding: 1.5em; 
+    border-radius: 0.5em;
+    background-color: rgba(0,0,0, 0.7);
+    color: white;
+}
+.gotoTop:hover {
+    background-color: rgba(0,0,0, 1);
+}
+
+#spanTop {
+    display: none;
+    font-family: Roboto;
+}
+
+
+.gotoTop:hover #spanTop {
+    display: inline;
+}
+
+.nextProduct {
+    padding: 0.8em;
+    border-radius: 0;
+    background-color: black;
+    width: 10.5em;
+    color: white;
+    position: fixed;
+    right: 0em;
+    z-index: 99;
+    top: 1.5em;
+    display: none;
+}
+
+.doneFile {
+    background-color: #beffbe !important;
+}
+
+.doneFile:hover {
+    background-color: #89f489 !important;
+}
+
+.full button span {
+background-color: limegreen;
+border-radius: 32px;
+color: black;
+}
+.partially button span {
+background-color: orange;
+border-radius: 32px;
+color: black;
+}

@@ -1,0 +1,373 @@
+<nav class="navbar navbar-default" style="background-color: white;border-radius: 0;">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#"><img src="images/icon.png" width="20" style="vertical-align:middle"/></a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+		 <li class="active"><a href="#">ALPHA QA</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li tooltip-placement="bottom" uib-tooltip="Unverified Users">
+        	<a href="" ng-click="model.active=2">
+        		<span class="glyphicon glyphicon-list-alt" style="color: red;"></span>
+        		<span  ng-hide="model.uvUsers.length === 0" class="badge"> {{model.uvUsers.length }}</span>
+        	</a>
+        </li>
+        <li uib-tooltip="admin@alpha.com"><a href="#/accounts/admin/dashboard">Welcome Admin</a></li>
+        <li><a href="#/security/logout">Logout</a></li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+
+<div cg-busy="model.filesPromise"></div>
+
+<br>
+<div>
+
+	<uib-tabset active="model.active" justified="true">
+		<uib-tab index="0" ng-click="model.setActiveTab(model.active)">
+			<uib-tab-heading>Home <i class="glyphicon glyphicon-home"></i></uib-tab-heading>
+			<br><br>
+			<div class="row">
+				<div class="col-md-2" id="tabRep" ng-click="model.active = 1" 
+											popover-placement="bottom" uib-popover-html="'<b>Verified Users</b> : {{model.vUsers.length}}
+																	<br>
+																	<b>Unverified Users</b> : {{model.uvUsers.length}}
+											'" popover-trigger="'mouseenter'"
+				>
+					<center>
+						<img src="images/png/man.png" class="img-responsive"> <span class="homeHeader"> Total Users</span>
+						<hr id="sep">	
+						<span class="label label-info valueHeader">{{ model.vUsers.length + model.uvUsers.length }}</span>
+					</center>
+				</div>
+				<div class="col-md-2" id="tabRep">
+					<center>
+						<img src="images/png/workers.png" class="img-responsive"> <span class="homeHeader"> Total Companies</span>
+						<hr id="sep">	
+						<span class="label label-info valueHeader">{{ model.companies.length }}</span>
+					</center>
+				</div>
+				<div class="col-md-2" id="tabRep" popover-placement="bottom" uib-popover-html="'<b>Completed Files</b> : {{model.completedFiles.length}}
+																	<br>
+																	<b>Assigned Files</b> : {{model.assignedFiles.length}}
+																	<br>
+																	<b>New Unassigned Files</b> : {{model.uncompletedFiles.length}}
+					'" popover-trigger="'mouseenter'" ng-click="model.active = 3" >
+					<center>
+						<img src="images/png/file.png" class="img-responsive"> <span class="homeHeader"> Total Files</span>
+						<hr id="sep">	
+						<span class="label label-info valueHeader">{{ model.uncompletedFiles.length +  model.assignedFiles.length + model.completedFiles.length }}</span>
+					</center>
+				</div>
+				<div class="col-md-2" id="tabRep" ng-click="model.active = 4" >
+					<center>
+						<img src="images/png/msg.png" class="img-responsive"> <span class="homeHeader"> Total Messages</span>
+						<hr id="sep">	
+						<span class="label label-info valueHeader">{{ model.vUsers.length }}</span>
+					</center>
+				</div>
+				<div class="col-md-2" id="tabRep">
+					<center>
+						<img src="images/png/workers.png" class="img-responsive"> </span> <span class="homeHeader"> Total Tracked</span>
+						<hr id="sep">	
+						<span class="label label-info valueHeader">{{ model.device.length }}</span>
+					</center>
+				</div>
+			</div>
+			<hr>
+			<div class="row">
+				Analytics here!
+			</div>
+		</uib-tab>
+		<uib-tab index="1" ng-click="model.setActiveTab(model.active)">
+			<uib-tab-heading>Verified Users <i class="glyphicon glyphicon-user"></i></uib-tab-heading>
+			<div ng-show="model.vUsers.length === 0">
+				<center>
+					<img src="images/notFound.svg" class="img-responsive notfound">
+					<h3 id="Header">No User Registerations!</h3>
+				</center>
+			</div>
+			
+			<div ng-show="model.vUsers.length !== 0">
+				<center>
+					<p>
+						<h4 id="Header">Showing Verified Users : {{model.vUsers.length}} Entries</h4>
+					</p>
+				</center>
+				<div class="row">
+					<div class="col-md-12">
+						<table datatable="ng" class="row-border" dt-instance="model.dtInstanceVUsers" dt-options="model.dtOptionsVUsers">
+							<thead>
+								<tr>
+									<th>Email</th>
+									<th>Name</th>
+									<th>Company</th>
+									<th>Emp Code</th>
+									<th>Role</th>
+									<th>Contact</th>
+									<th>Time</th>
+									<th> &nbsp; </th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="user in model.vUsers track by $index" uib-tooltip="{{'UID : ' + user.uidKey}}">
+									<td>{{ user.email }}</td>
+									<td>{{ user.name }}</td>
+									<td>{{ user.company }}</td>
+									<td>{{ user.eCode }}</td>
+									<td>{{ user.role }}</td>
+									<td>{{ user.contact }}</td>
+									<td>{{ user.timestampVer | date: 'short' }}</td>
+									<td>
+										<button class="btn btn-danger glyphicon glyphicon-remove" ng-click="model.removeVerified(user)"></button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			
+		</uib-tab>
+		<uib-tab index="2" ng-click="model.setActiveTab(model.active)">
+			<uib-tab-heading>Pending Users <i class="glyphicon glyphicon-tags"></i></uib-tab-heading>
+			<div ng-show="model.uvUsers.length === 0">
+				<center>
+					<img src="images/notFound.svg" class="img-responsive notfound">
+					<h3 id="Header">No Pending Registerations!</h3>
+				</center>
+			</div>
+			<div ng-show="model.uvUsers.length !== 0">
+				<center>
+					<p>
+						<h4 id="Header">Showing Un-Verified Users : {{model.uvUsers.length}} Entries</h4>
+					</p>
+				</center>
+				<div class="row">
+					<div class="col-md-12">
+						<table datatable="ng" class="row-border" dt-instance="model.dtInstanceUnUsers" dt-options="model.dtOptionsUnUsers">
+							<thead>
+								<tr>
+									<th>Email</th>
+									<th>Name</th>
+									<th>Role</th>
+									<th>Contact</th>
+									<th>Company</th>
+									<th>Time</th>
+									<th> &nbsp; </th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="user in model.uvUsers track by $index" uib-tooltip="{{'UID : ' + user.uidKey}}">
+									<td>{{ user.email }}</td>
+									<td>{{ user.name }}</td>
+									<td>{{ user.role }}</td>
+									<td>{{ user.contact }}</td>
+									<td>{{ user.company }}</td>
+									<td>{{ user.timestamp | date: 'short' }}</td>
+									<td>
+										<button class="btn btn-success glyphicon glyphicon-ok" ng-click="model.verify(user)"></button>
+										<button class="btn btn-danger glyphicon glyphicon-remove" ng-click="model.remove(user)"></button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			<br>
+			</div>
+			
+		</uib-tab>
+		
+		<uib-tab index="3" ng-click="model.setActiveTab(model.active); model.getFiles()">
+			<uib-tab-heading>Files <i class="glyphicon glyphicon-file"></i></uib-tab-heading>
+			<div ng-show="false">
+				<center>
+					<img src="images/notFound.svg" class="img-responsive notfound">
+					<h3 id="Header">No Files!</h3>
+				</center>
+			</div>
+			<br><br>
+			<uib-tabset type="pills">
+			    <uib-tab classes="btn-sm" ng-click="model.getFiles()">
+					<uib-tab-heading>Assigned Files <i class="glyphicon glyphicon-refresh"></i></uib-tab-heading>
+
+					<div ng-show="model.assignedFiles.length === 0">
+						<center>
+							<img src="images/notFound.svg" class="img-responsive notfound">
+							<h3 id="Header">No Assigned Files till now!</h3>
+						</center>
+					</div>
+					<div ng-hide="model.assignedFiles.length === 0">
+						<table datatable="ng" class="row-border hover" dt-instance="model.dtInstanceFiles" dt-options="model.dtOptionsFiles">
+							<thead>
+								<tr>
+									<th>File UID</th>
+									<th>Client</th>
+									<th>Assigned To</th>
+									<th>Deadline</th>
+									<th>Progress</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="file in model.assignedFiles track by $index" ng-if="file.progress!=file.total">
+									<td>{{ file.$id }}</td>
+									<td>{{ file.clientUID }}</td>
+									<td>{{ file.assignedToEmployee }}</td>
+									<td>{{ file.deadline | date: 'medium' }}</td>
+									<td><center><span class="label label-success">{{ file.progress/file.total * 100 | number: 2 }} %</span></center></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</uib-tab>
+			    <uib-tab classes="btn-sm" ng-click="model.getFiles()">
+			    	<uib-tab-heading>Unassigned Files <i class="glyphicon glyphicon-plus"></i></uib-tab-heading>
+			    	<div ng-show="model.uncompletedFiles.length === 0">
+						<center>
+							<img src="images/notFound.svg" class="img-responsive notfound">
+							<h3 id="Header">No New(UnAssigned) Files till now!</h3>
+						</center>
+					</div>
+			    	<div ng-hide="model.uncompletedFiles.length === 0">
+						<table datatable="ng" class="row-border hover" dt-instance="model.dtInstanceFiles" dt-options="model.dtOptionsFiles">
+							<thead>
+								<tr>
+									<th>File UID</th>
+									<th>Client</th>
+									<th>Assigned To</th>
+									<th>Deadline</th>
+									<th>Progress</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="file in model.uncompletedFiles track by $index">
+									<td>{{ file.$id }}</td>
+									<td>{{ file.clientUID }}</td>
+									<td>{{ file.assignedToEmployee }}</td>
+									<td>{{ file.deadline | date: 'medium' }}</td>
+									<td><center><span class="label label-success">{{ file.progress/file.total * 100 | number:2 }} %</span></center></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</uib-tab>
+				<uib-tab classes="btn-sm" ng-click="model.getFiles()">
+			    	<uib-tab-heading>Completed Files <i class="glyphicon glyphicon-saved"></i></uib-tab-heading>
+			    	<div ng-show="model.assignedFiles.length === 0">
+						<center>
+							<img src="images/notFound.svg" class="img-responsive notfound">
+							<h3 id="Header">No Completed Files till now!</h3>
+						</center>
+					</div>
+			    	<div ng-hide="model.assignedFiles.length === 0">
+						<table datatable="ng" class="row-border hover" dt-instance="model.dtInstanceFiles" dt-options="model.dtOptionsFiles">
+							<thead>
+								<tr>
+									<th>File UID</th>
+									<th>Client</th>
+									<th>Assigned To</th>
+									<th>Deadline</th>
+									<th>Progress</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="file in model.assignedFiles track by $index" ng-if="file.progress===file.total">
+									<td>{{ file.$id }}</td>
+									<td>{{ file.clientUID }}</td>
+									<td>{{ file.assignedToEmployee }}</td>
+									<td>{{ file.deadline | date: 'medium' }}</td>
+									<td><center><span class="label label-success">{{ file.progress/file.total * 100 | number: 2 }} %</span></center></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</uib-tab>
+			</uib-tabset>
+
+		</uib-tab>
+		<uib-tab index="4" ng-click="model.setActiveTab(model.active)">
+			<uib-tab-heading>Logs <i class="glyphicon glyphicon-th-list"></i></uib-tab-heading>
+			<uib-tabset type="pills">
+				<uib-tab classes="btn-sm">
+					<uib-tab-heading>Tracking <i class="glyphicon glyphicon-blackboard"></i></uib-tab-heading>
+					<div ng-show="model.device.length === 0">
+						<center>
+							<img src="images/notFound.svg" class="img-responsive notfound">
+							<h3 id="Header">No Login Activity!</h3>
+						</center>
+					</div>
+					
+					<div ng-show="model.device.length !== 0">
+						<div style='float: right;'>
+							<span class="label label-danger">Click on the row to see it on google map!</span>
+						</div>
+						<div class="row">
+							<div class="col-md-12">
+								<table datatable="" class="row-border hover" dt-options="model.dtOptionsTracking">
+									<thead>
+										<tr>
+											<th>User ID</th>
+											<th>Browser</th>
+											<th>OS</th>
+											<th>IP</th>
+											<th>City</th>
+											<th>Region</th>
+											<th>TimeStamp</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr ng-repeat="log in model.device track by $index" ng-click="model.renderMap(log, log.geo)" uib-tooltip="Click for viewing on Google Map">
+											<td>{{ log.user }}</td>
+											<td>{{ log.browser }}</td>
+											<td>{{ log.os }}</td>
+											<td>{{ log.geo.ip }}</td>
+											<td>{{ log.geo.city + ", " + log.geo.country}}</td>
+											<td>{{ log.geo.region }}</td>
+											<td>{{ log.login_time | date: 'medium' }}</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<div>
+								<div class="modal fade" id="mapModal" role="dialog" aria-labelledby="mapModal">
+									<div class="modal-dialog">
+
+										<!-- Modal content-->
+										<div class="modal-content">
+											<div class="modal-header">
+												<button type="button" class="close" data-dismiss="modal">&times;</button>
+												<center><h4 class="modal-title">Rendering Map!</h4></center>
+											</div>
+											<div class="modal-body">
+												<center><h5>UID : {{ model.userTracked.user}} was tracked on <span class="label label-info">{{model.userTracked.login_time | date: 'medium'}}</span></h5></center>
+												<p>
+													<div id="mapCanvas" style="height: 400px"></div>
+												</p>
+											</div>
+											<div class="modal-footer">
+												<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+											</div>
+										</div>
+									</div>
+							    </div>
+							</div>
+						</div>
+					</div>
+				</uib-tab>
+			</uib-tabset>
+		</uib-tab>
+	</uib-tabset>
+</div>

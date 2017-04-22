@@ -1,0 +1,162 @@
+<div id="top"></div>
+
+<nav-component backtohome="true" get-user='model.user'></nav-component>
+
+
+<div class="nextProduct animated" id="response">
+	<img src="images/correct.png">
+	<span>Response Saved</span>
+</div>
+
+<div cg-busy="{promise:model.fetchPromise,message:'Loading Your Data',backdrop: false}"></div>
+<div class="container_qc" ng-hide="model.finished">
+	<div class="row">
+		<div class="col-md-3">
+			<div class="product_imageDiv" >
+				<img class="product_images" ng-mouseover="model.magnify()" data-toggle="magnify" style="width: 100%" ng-src="./Files/Uploaded/Images/{{model.datasheet['PRODUCT IMAGES']}}" alt="{{model.datasheet['Seller Article SKU']}}">
+				<div class="imageFetch">
+					<button class="btn btn-default btn-block buttonType" ng-click="model.productImagesModal()" style="margin-top: 0.5em">Show More</button>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6" class="initial_info">
+			<strong>Product SKU</strong> : <input type="text" class="form-control" autofocus ng-model="model.datasheet['Seller Article SKU']"><br>
+			<strong>Product Title</strong> : <input type="text" class="form-control" ng-model="model.datasheet['PRODUCT TITLE']"><br>
+			<strong>Product Description</strong> : <textarea class="form-control" rows="8" style="outline: none; border-radius: 0;font-size: 13px;resize: none;" ng-model="model.datasheet['PRODUCT DESCRIPTION']"></textarea><br>
+		</div>
+		<div class="col-md-3">
+			<form name="qa_form">
+				<div class="resetButton">
+					<button  class="btn btn-warning btn-block buttonType" uib-tooltip="Reset some entries to default value?" tooltip-placement="bottom" ng-click="model.resetProductModal()">Reset Product</button>
+				</div>
+				<hr>
+				<div class="QAStatus">
+					<label>QA STATUS</label><br>
+					<input type="radio"  name="qa_status" required ng-model="model.statusValue" value="Pass"/> Pass<br>
+					<input type="radio"  name="qa_status" required ng-model="model.statusValue" value="Fail"/> Fail<br>
+					<input type="radio"  name="qa_status" required ng-model="model.statusValue" value="Ignore and Pass"/> Ignore and Pass<br>
+
+				</div>
+				<br>
+				<div class="usercomment">
+					<label>User Comment</label>
+					<textarea class="form-control" rows="2" ng-model="model.comment" placeholder="Optional" style="outline: none; border-radius: 0;font-size: 13px;resize: none;"></textarea>
+				</div>
+				<hr>
+				<div class="nextFetch">
+					<button type="submit" ng-disabled="qa_form.qa_status.$invalid" class="btn btn-info btn-block buttonType" ng-click="model.saveObject()">Next Product</button>
+				</div>
+			</form>
+		</div>
+	</div>
+	<hr>
+	<div>
+		<div class="row">
+			<div class="col-md-3 col-md-offest-1" ng-repeat="(key, value) in model.datasheet track by $index">
+					<div ng-show="key!=='Seller Article SKU' && key!=='PRODUCT TITLE' && key!=='PRODUCT DESCRIPTION'">
+						<strong>{{key.replace("(Refer LOV List)", "")}}</strong> : 
+
+						<input type="text" class="form-control" ng-if="key.search('(Refer LOV List)')===-1" ng-model="model.datasheet[key]"><br>
+
+						<div ng-if="key.search('(Refer LOV List)')!==-1">
+							<select ng-model="model.datasheet[key]" class="form-control" id="role" name="role">
+								<optgroup label="Original Value : {{model.backup[key]}}">
+									<option value="{{value}}" selected style="display: none;">{{value}}</option>
+									<option ng-repeat="lov in model.lovObject[key] | commaseperate track by $index" value="{{lov}}">{{lov}}</option>
+								</optgroup>
+							</select>
+						</div>
+					</div>
+			</div>
+		</div>
+	</div>
+	<br>
+
+	<hr>
+	<a ng-click="model.goUp()" href="" du-smooth-scroll style="position: fixed; bottom: 0.5em; right:1em">
+		<div id="gotoButton" class="gotoTop" style="visibility: hidden">
+			<i class="glyphicon glyphicon-arrow-up"><span id="spanTop">Top</span></i>
+		</div>
+	</a>
+	<br>
+</div>
+
+<!-- Product Reset Modal -->
+<div data-remodal-id="productResetModal">
+	<button data-remodal-action="close" class="remodal-close"></button>
+	<h3 id="Header">Reset Product</h3>
+	<br>
+		<div class="form-group">
+			<label>Please select an attribute to reset : </label>
+			<select class="form-control" id="role" name="role" ng-model="model.productSelected" >
+				<option disabled style="display: none;"></option>
+				<option ng-repeat="(key, value) in model.datasheet track by $index" value="{{ key }}">{{key}}</option>
+			</select>
+		</div>
+		<div ng-show="model.productSelected">
+			<div ng-show="model.datasheet[model.productSelected] === model.backup[model.productSelected]">
+				<div class="breadcrumb">The Value of <strong>"{{ model.productSelected }}"</strong> is not changed. There is no need to reset.</div>
+				<h5>Value : {{ model.datasheet[model.productSelected] }}</h5>
+			</div>
+			<div ng-show="model.datasheet[model.productSelected] !== model.backup[model.productSelected]">
+				<div class="breadcrumb">Value : {{ model.datasheet[model.productSelected] }}</div>
+				<div><h4>TO</h4></div>
+				<div class="breadcrumb">Original Value : {{ model.backup[model.productSelected] }}</div>
+			</div>
+		</div>
+	<br>
+	<button data-remodal-action="cancel" class="remodal-cancel" ng-click="model.discard()"> Close <i class="glyphicon glyphicon-remove"></i></button>
+	<button data-remodal-action="confirm" class="remodal-confirm" ng-click="model.confirm(model.productSelected)"> Confirm Reset <i class="glyphicon glyphicon-ok"></i></button>
+</div>
+<!-- End of File Log Modal -->
+
+
+
+<!-- Product Image Show More Modal -->
+<div data-remodal-id="productImagesModal">
+	<button data-remodal-action="close" class="remodal-close"></button>
+	<h3 id="Header">Product Images</h3>
+	<div cg-busy="{promise:model.fetchImagePromise,message:'Extracting Color Palette'}"></div>
+	<div>
+		<img style="width: 40%; height: 50%;" ng-src="./Files/Uploaded/Images/{{model.datasheet['PRODUCT IMAGES']}}" alt="{{model.datasheet['Seller Article SKU']}}">
+	</div>
+	<div ng-show="model.palette">
+		<center>
+			<div class="breadcrumb">Approximated Colors Extracted from the above Image are:</div>
+			<div class="row">
+				<div style="display: inline-block !important; margin: 0 0.5em 0 0.5em; border-radius: 100%; width: 2.5em;height: 2.5em; box-shadow: 1px 1px 30px rgba(0,0,0,0.1);" ng-repeat="color1 in model.palette track by $index" ng-style="{'background-color': color1}"></div>
+			</div>
+
+		</center>
+	</div>
+	<hr>
+	<button data-remodal-action="cancel" class="remodal-cancel"> Close <i class="glyphicon glyphicon-remove"></i></button>
+</div>
+<!-- End of Product Image Show More Modal -->
+
+<!-- Finished Analysis Modal -->
+<div data-remodal-id="finishedModal">
+	
+	<button data-remodal-action="close" class="remodal-close"></button>
+	<h3 id="Header">Success <img src="images/correct.png"></h3>
+	<div>
+		<center>
+			<div class="breadcrumb"><em>Quality Analysis</em> was successfully done. Your Response was saved. Proceed back to Home!</div>
+		</center>
+	</div>
+	<hr>
+	<a><button ng-click="model.closeModal()" class="remodal-confirm"> Back To Home <i class="glyphicon glyphicon-backward"></i></button></a>
+</div>
+<!-- End of Finished Analysis Modal -->
+
+
+<script>
+	var mywindow = $(window);
+	mywindow.scroll(function(){
+		if(mywindow.scrollTop() > 130)
+			document.getElementById("gotoButton").style.visibility = "visible";
+		else
+			document.getElementById("gotoButton").style.visibility = "hidden";
+	});
+
+</script>

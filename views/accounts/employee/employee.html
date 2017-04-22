@@ -1,0 +1,125 @@
+<nav-component get-user='model.user'></nav-component>
+
+<br>
+<div>
+	<uib-tabset active="model.active" justified="true">
+		<uib-tab index="0" ng-click="model.setActiveTab(model.active); model.calc();">
+			<uib-tab-heading>Home <i class="glyphicon glyphicon-home"></i></uib-tab-heading>
+			<br><br>
+			<div class="row">
+				<div class="col-md-2" id="tabRep">
+					<center>
+						<img src="images/png/man.png" class="img-responsive"> <span class="homeHeader"> Total Files </span>
+						<hr id="sep">	
+						<span class="label label-info valueHeader">{{model.files.length}}</span>
+					</center>
+				</div>
+				<div class="col-md-2" id="tabRep">
+					<center>
+						<img src="images/png/completed.png" class="img-responsive"> <span class="homeHeader"> Completed Files </span>
+						<hr id="sep">	
+						<span class="label label-info"><span class="valueHeader">{{model.completed}}</span></span>
+					</center>
+				</div>
+				<div class="col-md-2" id="tabRep">
+					<center>
+						<img src="images/png/notcompleted.png" class="img-responsive"> <span class="homeHeader"> Uncompleted Files</span>
+						<hr id="sep">	
+						<span class="label label-info"><span class="valueHeader">{{model.notcompleted}}</span></span>
+					</center>
+				</div>
+				<div class="col-md-2" id="tabRep">
+					<center>
+						<img src="images/png/star.png" class="img-responsive"> <span class="homeHeader"> Ratings</span>
+						<hr id="sep">	
+						<span class="label label-info"><span class="valueHeader">1</span></span>
+					</center>
+				</div>
+				<div class="col-md-2" id="tabRep">
+					<center>
+						<img src="images/png/msg.png" class="img-responsive"> <span class="homeHeader"> Messages</span>
+						<hr id="sep">	
+						<span class="label label-info"><span class="valueHeader">1</span></span>
+					</center>
+				</div>
+			</div>
+			<hr>
+			<div class="row">
+				Analytics here!
+			</div>
+		</uib-tab>
+		
+		
+		<uib-tab index="1" ng-click="model.setActiveTab(model.active)">
+			<uib-tab-heading>FILES <i class="glyphicon glyphicon-file"></i></uib-tab-heading>
+			<div>
+					<center>
+						<br><div class="breadcrumb"><center>Showing Files Assigned To : {{model.user.name}}</center></div>
+					</center>
+			</div>
+			<br>
+			<div>
+				<div class="row">
+						<div class="col-md-12">
+							<div ng-show="model.files.length === 0">
+								<center>
+									<img src="images/notFound.svg" class="img-responsive notfound">
+									<h3 id="Header">No Assigned Files till now!</h3>
+								</center>
+							</div>
+							<div ng-hide="model.files.length === 0">
+								<table datatable="ng" class="row-border" dt-instance="model.dtInstanceFiles" dt-options="model.dtOptionsFiles">
+									<thead>
+										<tr>
+											<th>File UID</th>
+											<th>Client</th>
+											<th>Deadline</th>
+											<th>Progress</th>
+											<th></th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr ng-repeat="file in model.files track by $index" ng-class="{'doneFile': file.total==file.progress, 'deadlineNotify' : (file.deadline < model.date) && (file.progress != file.total)}">
+											<td>{{ file.$id }}</td>
+											<td>{{ file.clientUID }}</td>
+											<td>{{ file.deadline | date: 'medium' }}</td>
+											<td><center><span class="label label-success">{{ file.progress/file.total * 100 | number: 2 }} %</span></center></td>
+											<td>
+												<center>
+													<button ng-hide="file.progress===file.total" class="btn btn-success" ng-click="model.viewFileData(file)">
+														<span class="glyphicon glyphicon-eye-open"  uib-tooltip="View"></span>
+													</button>
+													<p ng-show="file.progress===file.total"><b>Complete</b></p>
+												</center>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+				</div>
+			</div>
+		</uib-tab>
+		
+		<uib-tab index="2" ng-click="model.setActiveTab(model.active)">
+			<uib-tab-heading>FeedBack <i class="glyphicon glyphicon-tags"></i></uib-tab-heading>
+			<div>
+					<center>
+						<h2 id="Header">Feedback</h2>
+					</center>
+			</div>
+		</uib-tab>
+		
+		<uib-tab index="3" ng-click="model.setActiveTab(model.active);">
+			<uib-tab-heading>Messages <i class="glyphicon glyphicon-comment"></i></uib-tab-heading>
+			<br><br>
+			
+			    <message-component msgs-recieved="model.msgsRec" msgs-sent="model.msgsSent" user="model.user"></message-component>
+		</uib-tab>
+		
+		<uib-tab index="4" ng-click="model.setActiveTab(model.active)">
+			<uib-tab-heading>Logs <i class="glyphicon glyphicon-th-list"></i></uib-tab-heading>
+			Showing Logs here!
+		</uib-tab>
+	</uib-tabset>
+</div>

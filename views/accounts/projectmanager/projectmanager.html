@@ -1,0 +1,223 @@
+<nav-component get-user='model.user'></nav-component>
+
+<div cg-busy="{promise:model.companyPromise,message:'Loading Your Data, Please wait!',backdrop: false}"></div>
+
+<br>
+<div>
+	<uib-tabset active="model.active" justified="true">
+		<uib-tab index="0" ng-click="model.setActiveTab(model.active)">
+			<uib-tab-heading>Home <i class="glyphicon glyphicon-home"></i></uib-tab-heading>
+			<br><br>
+			<div class="row">
+				<div class="col-md-2" id="tabRep">
+					<center>
+						<img src="images/png/man.png" class="img-responsive"> <span class="homeHeader"> Total Employees </span>
+						<hr id="sep">	
+						<span class="label label-info valueHeader">{{ model.emps.length }}</span>
+					</center>
+				</div>
+				<div class="col-md-2" id="tabRep">
+					<center>
+						<img src="images/png/completed.png" class="img-responsive"> <span class="homeHeader"> Completed Files </span>
+						<hr id="sep">	
+						<span class="label label-info"><span class="valueHeader">{{ model.completedfiles.length }}</span></span>
+					</center>
+				</div>
+				<div class="col-md-2" id="tabRep">
+					<center>
+						<img src="images/png/notcompleted.png" class="img-responsive"> <span class="homeHeader"> Uncompleted Files</span>
+						<hr id="sep">	
+						<span class="label label-info"><span class="valueHeader">{{model.uncompletedfiles.length }}</span></span>
+					</center>
+				</div>
+				<div class="col-md-2" id="tabRep">
+					<center>
+						<img src="images/png/star.png" class="img-responsive"> <span class="homeHeader"> Ratings</span>
+						<hr id="sep">	
+						<span class="label label-info"><span class="valueHeader">1</span></span>
+					</center>
+				</div>
+				<div class="col-md-2" id="tabRep">
+					<center>
+						<img src="images/png/msg.png" class="img-responsive"> <span class="homeHeader"> Messages</span>
+						<hr id="sep">	
+						<span class="label label-info"><span class="valueHeader">1</span></span>
+					</center>
+				</div>
+			</div>
+			<hr>
+			<div class="row">
+				<todo-component></todo-component>
+			</div>
+		</uib-tab>
+		
+		
+		<uib-tab index="1" ng-click="model.setActiveTab(model.active)">
+			<uib-tab-heading>UNASSIGNED FILES <i class="glyphicon glyphicon-tags"></i></uib-tab-heading>
+				<br>
+				<div ng-show="model.uncompletedfiles.length === 0">
+					<center>
+							<img src="images/notFound.svg" class="img-responsive notfound">
+							<h3 id="Header">No Files! All have been assigned, it seems. Good Job!</h3>
+					</center>
+				</div>
+				<div ng-show="model.uncompletedfiles.length>0">
+					<center>
+						<h2 id="Header">Files Status (UnAssigned)</h2>
+					</center>
+					<div class="row">
+						<div class="col-md-12">
+							<table datatable="ng" class="row-border" dt-options="model.dtOptions" dt-instance="model.dtuncompletedfiles">
+									<thead>
+										<tr>
+											<th>File UID</th>
+											<th>Client UID</th>
+											<th>Deadline</th>
+											<th>Datasheet Size</th>
+											<th>LOV Sheet size</th>
+											<th><center><span class="label label-danger">Action</span></center></th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr ng-repeat="file in model.uncompletedfiles | orderBy: 'uncompletedfiles.deadline'" ng-class="{'deadlineNotify' : (file.deadline < model.date) && !(file.progress === file.total)}">
+											<td>{{file.$id}}</td>
+											<td>{{file.clientUID}}</td>
+											<td>{{file.deadline | date: "medium"}}</td>
+											<td>{{file.sizeDatasheet / 1024 | number:2 }} MB</td>
+											<td>{{file.sizeLovsheet / 1024 | number:2 }} MB</td>
+											<td><center><button class="btn btn-danger" ng-click="model.assignEmp(file)"><span class="glyphicon glyphicon-tags"  uib-tooltip="Assign to Employee!"></span></button></center></td>
+										</tr>
+									</tbody>
+								</table>
+
+								<!-- File Assign Modal -->
+								<div data-remodal-id="assignEmpModal">
+									<button data-remodal-action="close" class="remodal-close" ng-click="model.closeAssignModal()"></button>
+									<h3 id="Header">Assign to Employee</h3>
+									<br><br>
+							  		<form class="form-horizontal" id="assignEmpForm" name="assignEmpForm">
+										  <div class="form-group" ng-class="{'has-error': !model.empFlag && assignEmpForm.$dirty}">
+										    <label for="EmployeeSelection" class="col-sm-2 control-label">Assign Employee <span class="label label-info">NAME</span></label>
+										    <div class="col-sm-10 typeahead-demo">
+										      <input type="text" class="form-control" id="emp" name="emp" autofocus autocomplete="off" placeholder="Enter the Employee Name" ng-model="model.emp" ng-required="true" uib-typeahead="emp for emp in model.employeesArray  | filter:$viewValue | limitTo:8" ng-change="model.checkEmp(model.emp); model.showStatus = false;" typeahead-on-select="model.getEmp(model.emp); model.showStatus = true;">
+
+										      <span id="empNotFound" class="help-block" ng-show="!model.empFlag && assignEmpForm.$dirty">User : {{ model.emp }} not found! Please select from the Dropdown!</span>
+										    </div>
+										  </div>
+									</form>
+									
+									<div ng-show="model.showStatus">
+										<div cg-busy="{promise:model.empPromise,message:'Extracting Data',backdrop: false}"></div>
+										<h4>Employee Information Extracted</h4>
+										<div class="jumbotron" style="text-align: left;">
+											<table style="width: 100%;">
+												<tbody>
+													<tr>
+														<td><strong>Name : </strong></td>
+														<td>{{model.emp1name}}</td>
+													</tr>
+													<tr>
+														<td><strong>ECode : </strong></td>
+														<td>{{model.emp1code}}</td>
+													</tr>
+													<tr>
+														<td><strong>UID : </strong></td>
+														<td>{{model.emp1uid}}</td>
+													</tr>
+													<tr>
+														<td><strong>Email : </strong></td>
+														<td>{{model.emp1email}}</td>
+													</tr>
+													<tr>
+														<td><strong>Contact : </strong></td>
+														<td>{{model.emp1contact}}</td>
+													</tr>
+													<tr>
+														<td><strong>Rating : </strong></td>
+														<td>{{model.emp1rating}}</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+									<button data-remodal-action="confirm" class="remodal-confirm" ng-click="model.assignFile(model.emp1uid, model.emp1email)">Assign</button>
+								</div>
+								<!-- End of File Assign Modal -->
+						</div>
+					</div>
+				</div>
+		</uib-tab>
+		
+		<uib-tab index="2" ng-click="model.setActiveTab(model.active)">
+			<uib-tab-heading>Files <i class="glyphicon glyphicon-file"></i></uib-tab-heading>
+			<div>
+					<center>
+						<h2 id="Header">Files</h2>
+					</center>
+			</div>
+
+			<div ng-show="model.assignedfiles.length === 0">
+					<center>
+							<img src="images/notFound.svg" class="img-responsive notfound">
+							<h3 id="Header">No Assigned Files found!</h3>
+					</center>
+			</div>
+			<div class="row" ng-hide="model.assignedfiles.length === 0">
+						<div class="col-md-12">
+							<table datatable="ng" class="row-border" dt-options="model.dtOptions" dt-instance="model.dtuncompletedfiles">
+									<thead>
+										<tr>
+											<th>File UID</th>
+											<th>Client UID</th>
+											<th>Deadline</th>
+											<th><center><span class="label label-info">Progress</span></center></th>
+											<th><center><span class="label label-info">View Logs</span></center></th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr ng-repeat="file in model.assignedfiles | orderBy: 'assignedfiles.deadline'" ng-class="{'deadlineNotify' : (file.deadline < model.date) && (file.progress != file.total), 'doneFile' : file.progress === file.total}">
+											<td>{{file.$id}}</td>
+											<td>{{file.clientUID}}</td>
+											<td>{{file.deadline | date: "medium"}}</td>
+											<td><center><span class="label label-success">{{ (file.progress / file.total) * 100 | number:1 }} %</span></center></td>
+											<td>
+												<center>
+													<button ng-hide="file.progress===file.total" class="btn btn-info" ng-click="model.getFileLogsNow(file.$id)">
+														<span class="glyphicon glyphicon glyphicon-eye-open"></span>
+													</button>
+													<p ng-show="file.progress===file.total"><b>Complete</b></p>
+												</center>
+											</td>
+										</tr>
+									</tbody>
+
+									<!-- File Log Modal -->
+									<div data-remodal-id="fileLogModal">
+										<button data-remodal-action="close" class="remodal-close"></button>
+										<h3 id="Header">File Logs</h3>
+										<p>
+											<ol class="breadcrumb" ng-repeat="log in model.logFile">
+											  <li>{{log.log}} @ <span style="float: right;">&nbsp;<span class="label label-info">{{log.timeStamp | date: "dd MMMM, yyyy (EEEE) hh:mm:ss:(sss) a"}}</span></span></li>
+											</ol>
+										</p>
+										<button data-remodal-action="confirm" class="remodal-confirm">That's Cool!</button>
+									</div>
+									<!-- End of File Log Modal -->
+								</table>
+						</div>
+					</div>
+		</uib-tab>
+		
+		<uib-tab index="3" ng-click="model.setActiveTab(model.active);">
+			<uib-tab-heading>Messages <i class="glyphicon glyphicon-comment"></i></uib-tab-heading>
+			<br><br>
+			
+			    <message-component msgs-recieved="model.msgsRec" msgs-sent="model.msgsSent" user="model.user"></message-component>
+		</uib-tab>
+		
+		<uib-tab index="4" ng-click="model.setActiveTab(model.active)">
+			<uib-tab-heading>Logs <i class="glyphicon glyphicon-th-list"></i></uib-tab-heading>
+			Showing Logs here!
+		</uib-tab>
+	</uib-tabset>
+</div>

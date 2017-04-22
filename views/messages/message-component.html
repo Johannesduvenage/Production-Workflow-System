@@ -1,0 +1,139 @@
+<uib-tabset type="pills">
+				<uib-tab classes="btn-sm" ng-click="model.message = null">
+					<uib-tab-heading>Mails <i class="glyphicon glyphicon-comment"></i></uib-tab-heading>
+					<div class="row">
+						<div class="col-md-12">
+							<div ng-show="model.recieved.length === 0">
+								<center>
+									<img src="images/notFound.svg" class="img-responsive notfound">
+									<h3 id="Header">No Messages Recieved!</h3>
+								</center>
+							</div>
+							<div ng-show="model.recieved.length !== 0">
+								<table datatable="" class="row-border hover">
+										<thead>
+											<tr>
+												<th style="width: 10%">Sender <i class="glyphicon glyphicon-user"></i></th>
+												<th style="width: 80%">Subject</th>
+												<th>Message <i class="glyphicon glyphicon-envelope"></i></th>
+												<th>Time</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr ng-repeat="msg in model.recieved | orderBy: 'msgs.timestamp'" ng-click="model.showMessage(msg)">
+												<td>{{msg.sender}}</td>
+												<td>{{msg.subject}}</td>
+												<td>{{msg.message}}</td>
+												<td>{{msg.timestamp | date: 'medium'}}</td>
+											</tr>
+										</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</uib-tab>
+			    <uib-tab classes="btn-sm" ng-click="model.message = null">
+			    	<uib-tab-heading>Sent <i class="glyphicon glyphicon-share-alt"></i></uib-tab-heading>
+			    	<div class="row">
+						<div class="col-md-12">
+							<div ng-show="model.sent.length === 0">
+								<center>
+									<img src="images/notFound.svg" class="img-responsive notfound">
+									<h3 id="Header">No Sent Messages!</h3>
+								</center>
+							</div>
+							<div ng-show="model.sent.length !== 0">
+								<table datatable="" class="row-border hover">
+										<thead>
+											<tr>
+												<th  style="width: 10%">Sender <i class="glyphicon glyphicon-user"></i></th>
+												<th style="width: 80%">Subject</th>
+												<th>Message <i class="glyphicon glyphicon-envelope"></i></th>
+												<th>Time</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr ng-repeat="msg in model.sent | orderBy: '-msgs.timestamp'" ng-click="model.showMessage(msg)">
+												<td>{{msg.sender}}</td>
+												<td>{{msg.subject}}</td>
+												<td>{{msg.message}}</td>
+												<td>{{msg.timestamp | date: 'medium'}}</td>
+											</tr>
+										</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</uib-tab>
+			    <div class="btn-sm" style="padding: 0.7em; margin-left: 0.5em; margin-top: 0.55em; color: #337AB7" ng-click="model.composeMail();">
+			    	<uib-tab-heading>Compose <i class="glyphicon glyphicon-pencil"></i></uib-tab-heading>
+
+			    	<!-- Compose Mail Modal -->
+						<div class="remodal" data-remodal-id="composeMailModal" ng-init="model.userFlag=true;">
+							<button data-remodal-action="close" class="remodal-close"></button>
+							<h3 id="Header" style="padding: 5px;">Compose Mail</h3>
+							<p>
+								<form class="form-horizontal" id="composeForm" name="composeForm">
+								  <div class="form-group" ng-class="{'has-error': !model.userFlag,
+													    	'has-success': model.userFlag && composeForm.recipient.$dirty
+													    }">
+								    <label for="recipient" class="col-sm-2 control-label">To </label>
+								    <div class="col-sm-10 typeahead-demo">
+								      <input type="text" class="form-control" id="recipient" name="recipient" autofocus autocomplete="off" placeholder="Enter the Recipient Email Address (example@example.com)"ng-model="model.recipientName" ng-required="true" uib-typeahead="user for user in model.usersLoad  | filter:$viewValue | limitTo:8" ng-change="model.checkUser(model.recipientName)" typeahead-on-select="model.checkUser(model.recipientName)">
+
+								      <span id="userNotFound" class="help-block" ng-show="!model.userFlag">User : {{ model.recipientName }} not found! Please enter a valid email address from the dropdown.</span>
+								    </div>
+								  </div>
+
+								  <div class="form-group">
+								    <label for="subject" class="col-sm-2 control-label">Subject </label>
+								    <div class="col-sm-10">
+								      <input type="text" class="form-control" id="subject" autofocus autocomplete="off" placeholder="Enter the subject of the mail." ng-model="model.subject">
+								    </div>
+								  </div>
+
+								  <div class="form-group">
+								    <label for="textarea" class="col-sm-2 control-label">Message <span class="label label-info">1000 char max.</span></label>
+								    <div class="col-sm-10">
+								      <textarea class="form-control" rows="8" ng-model="model.message" placeholder="Enter the message" style="outline: none; border-radius: 0;font-size: 13px;resize: none;" maxlength="1000"></textarea>
+								    </div>
+								    <br>
+								  </div>
+								  <span ng-show="model.message.length > 0 && model.message.length > 800" style="float: right; color: red;">{{ 1000 - model.message.length }} char. left 😅</span>
+
+								</form>
+							</p>
+							<button data-remodal-action="cancel" class="remodal-cancel" ng-click="model.discard()">Discard <i class="glyphicon glyphicon-trash"></i></button>
+							<button data-remodal-action="confirm" class="remodal-confirm" ng-click="model.sendMessage()">Send <i class="glyphicon glyphicon-send"></i></button>
+						</div>
+					<!-- Compose Mail Modal -->
+
+				</div>
+
+				<div class="modal fade" id="msgsModal" role="dialog" aria-labelledby="msgsModal">
+									<div class="modal-dialog">
+
+										<!-- Modal content-->
+										<div class="modal-content">
+											<div class="modal-header">
+												<button type="button" class="close" data-dismiss="modal">&times;</button>
+												<center><h4 class="modal-title">Message from <em><b>{{model.message.sender}}</b></em></h4></center>
+											</div>
+											<div class="modal-body">
+												<center><b>Time : </b> <em>{{model.message.timestamp | date: 'medium'}}</em></center>
+												<hr>
+												<b>Subject : </b> <em>{{model.message.subject}}</em>
+												<hr>
+												<b><u>Message Body</u> : </b>
+												<br>
+												<div style="font-size: 2em; margin-left: 10px;">{{model.message.message}}</div>
+												<hr>
+												<div style="font-size: 1em; margin-left: 10px;">Analyzed Message Category : {{model.message.analyze.category}} with amount - {{model.message.analyze.categoryAmount * 100}}</div>
+											</div>
+											<div class="modal-footer">
+												<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+											</div>
+										</div>
+									</div>
+							    </div>
+</uib-tabset>

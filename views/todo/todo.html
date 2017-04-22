@@ -1,0 +1,19 @@
+<div class="row">
+	<div class="col-md-7">
+			<form id="todo-form" ng-keyup="model.addTodo($event, newTodo)">
+				<input id="new-todo" placeholder="Enter Todo List" ng-model="newTodo" ng-disabled="saving" autofocus>
+			</form>
+	</div>
+	<div class="col-md-4">
+		<center>
+			<center>
+				<button type="button btn btn-block" class="btn btn-sm btn-info" ng-click="model.today()">Today</button>
+			</center>
+			<pre><center>Date: <b><em>{{model.dt | date:'fullDate' }}</em></b></center></pre>
+		    <div>
+		      <div uib-datepicker ng-model="model.dt" class="well well-sm" datepicker-options="model.options"></div>
+		    </div>
+		</center>
+	</div>
+</div>
+<br><br><br>

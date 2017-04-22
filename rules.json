@@ -1,0 +1,26 @@
+{
+	"header": "The AlphaQA Program Policies play an important role in maintaining a positive experience for everyone using AlphaQA. Be sure to check back from time to time, as these policies may change. Please also refer to Alpha’s Terms of Service for more information.",
+
+	"Spam and Bulk Mail": {
+		"1" : "Don’t use AlphaQA to distribute spam or unsolicited commercial mail.",
+		"2" : "You are not allowed to use AlphaQA to send email in violation of the CAN-SPAM Act or other anti-spam laws; to send unauthorized email via open, third-party servers; or to distribute the email addresses of any person without their consent.",
+		"3" : "You are not allowed to automate the AlphaQA interface, whether to send, delete, or filter emails, in a manner that misleads or deceives users.",
+		"4" : "Please keep in mind that your definition of “unsolicited” or “unwanted” mail may differ from your email recipients’ perception.  Exercise judgment when sending email to a large number of recipients, even if the recipients elected to receive emails from you in the past. When AlphaQA users mark emails as spam, it increases the likelihood that future messages you send will also be classified as spam by our anti-abuse systems."
+	},
+	"Fraud, Phishing, and other Deceptive Practices" : {
+		"1" : "You may not access another user’s AlphaQA account without their explicit permission. Don’t use AlphaQA to trick, mislead, or deceive other users into sharing information under false pretenses.",
+
+		"2" : "Dont phish for users data such as login information, passwords, financial details, or government identification numbers, or use AlphaQA as part of a scheme to defraud others."
+	},
+
+	"The Creation and Use of Multiple AlphaQA Accounts": "You’re also not allowed to create AlphaQA accounts by automated means or buy, sell, trade, or re-sell AlphaQA accounts to others.",
+
+	"Malware" : "Don’t use AlphaQA to transmit viruses, malware, worms, defects, Trojan horses, corrupted files, or any other items of a destructive or deceptive nature. In addition, don’t distribute content that harms or interferes with the operation of networks, servers, or other infrastructure belonging to Alpha or others.",
+
+	"Copyright" : "Respect copyright laws. Don’t infringe on the intellectual property rights of others, including patent, trademark, trade secret, or other proprietary rights. You are also not allowed to encourage or induce others to violate intellectual property rights.",
+
+	"Illegal Activity" : "Keep it legal. Don’t use AlphaQA to promote, organize, or engage in unlawful activities.",
+
+	"Harassment" : "Don’t use AlphaQA to harass, intimidate or threaten others. Anyone found to be using AlphaQA for these purposes may have their account disabled."
+
+}
