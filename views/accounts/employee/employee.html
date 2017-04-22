@@ -7,45 +7,48 @@
 			<uib-tab-heading>Home <i class="glyphicon glyphicon-home"></i></uib-tab-heading>
 			<br><br>
 			<div class="row">
-				<div class="col-md-2" id="tabRep">
+				<div class="col-md-2" id="tabRep" ng-click="model.active = 1;">
 					<center>
 						<img src="images/png/man.png" class="img-responsive"> <span class="homeHeader"> Total Files </span>
 						<hr id="sep">	
 						<span class="label label-info valueHeader">{{model.files.length}}</span>
 					</center>
 				</div>
-				<div class="col-md-2" id="tabRep">
+				<div class="col-md-2" id="tabRep" ng-click="model.active = 1;">
 					<center>
 						<img src="images/png/completed.png" class="img-responsive"> <span class="homeHeader"> Completed Files </span>
 						<hr id="sep">	
 						<span class="label label-info"><span class="valueHeader">{{model.completed}}</span></span>
 					</center>
 				</div>
-				<div class="col-md-2" id="tabRep">
+				<div class="col-md-2" id="tabRep" ng-click="model.active = 1;">
 					<center>
 						<img src="images/png/notcompleted.png" class="img-responsive"> <span class="homeHeader"> Uncompleted Files</span>
 						<hr id="sep">	
 						<span class="label label-info"><span class="valueHeader">{{model.notcompleted}}</span></span>
 					</center>
 				</div>
-				<div class="col-md-2" id="tabRep">
+				<div class="col-md-2" id="tabRep" ng-click="model.active = 2;">
 					<center>
 						<img src="images/png/star.png" class="img-responsive"> <span class="homeHeader"> Ratings</span>
 						<hr id="sep">	
-						<span class="label label-info"><span class="valueHeader">1</span></span>
+						<span class="label label-info"><span class="valueHeader">{{model.feeds.length}}</span></span>
 					</center>
 				</div>
-				<div class="col-md-2" id="tabRep">
+				<div class="col-md-2" id="tabRep" ng-click="model.active = 3;" popover-placement="bottom" uib-popover-html="'<b>Messages Recieved</b> : {{model.msgsRec.length}}
+																	<br>
+																	<b>Messages Sent</b> : {{model.msgsSent.length}}
+					'" popover-trigger="'mouseenter'" ng-click="model.active = 3">
 					<center>
 						<img src="images/png/msg.png" class="img-responsive"> <span class="homeHeader"> Messages</span>
 						<hr id="sep">	
-						<span class="label label-info"><span class="valueHeader">1</span></span>
+						<span class="label label-info"><span class="valueHeader">{{ model.msgsRec.length + model.msgsSent.length }}</span></span>
 					</center>
 				</div>
 			</div>
 			<hr>
-			<div class="row">
-				Analytics here!
+			<div>
+					<todo-component></todo-component>
 			</div>
 		</uib-tab>
 		
@@ -115,11 +118,6 @@
 			<br><br>
 			
 			    <message-component msgs-recieved="model.msgsRec" msgs-sent="model.msgsSent" user="model.user"></message-component>
-		</uib-tab>
-		
-		<uib-tab index="4" ng-click="model.setActiveTab(model.active)">
-			<uib-tab-heading>Logs <i class="glyphicon glyphicon-th-list"></i></uib-tab-heading>
-			Showing Logs here!
 		</uib-tab>
 	</uib-tabset>
 </div>

@@ -10,7 +10,8 @@
 				user: "=getEmp",
 				files: "=getFiles",
 				msgsRec: "=getMsgsRecieved",
-				msgsSent: "=getMsgsSent"
+				msgsSent: "=getMsgsSent",
+				feeds: '=feedback'
 			},
 			controller: function($sessionStorage, $firebaseArray, $location, DTOptionsBuilder, $scope){
 				var model = this;

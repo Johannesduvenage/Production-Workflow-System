@@ -1,8 +1,23 @@
 <div class="row">
 	<div class="col-md-7">
-			<form id="todo-form" ng-keyup="model.addTodo($event, newTodo)">
-				<input id="new-todo" placeholder="Enter Todo List" ng-model="newTodo" ng-disabled="saving" autofocus>
+			<center><h3>Your TODO's Here!</h3></center>
+			<hr>
+			<form id="todo-form" ng-keyup="model.addTodo($event, model.newTodo)">
+				<input id="new-todo" placeholder="Enter Todo List" autocomplete="off" ng-model="model.newTodo" ng-disabled="saving" autofocus>
 			</form>
+
+			<section id="main" ng-show="model.todos.length" ng-cloak>
+					<label for="toggle-all">Mark all as complete</label>
+					<ul id="todo-list">
+						<li ng-repeat="todo in model.todos | orderBy: todo.status track by $index" ng-class="{completed: todo.completed}">
+							<div class="view">
+								<input class="toggle" type="checkbox" ng-model="todo.completed" ng-change="model.toggleCompleted(todo.status, $index)">
+								<label>{{todo.title}}</label>
+								<button class="destroy" ng-click="model.removeTodo($index)"></button>
+							</div>
+						</li>
+					</ul>
+				</section>
 	</div>
 	<div class="col-md-4">
 		<center>
@@ -17,3 +32,4 @@
 	</div>
 </div>
 <br><br><br>
+<footer></footer>

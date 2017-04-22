@@ -127,7 +127,7 @@
 				}
 			})
 			.when("/accounts/employee", {
-				template: "<employee-dashboard get-emp='$resolve.getUser' get-files='$resolve.getFiles' current-auth='$resolve.currentAuth' get-msgs-recieved='$resolve.getMessagesRecieved' get-msgs-sent='$resolve.getMessagesSent'></employee-dashboard>",
+				template: "<employee-dashboard get-emp='$resolve.getUser' get-files='$resolve.getFiles' current-auth='$resolve.currentAuth' get-msgs-recieved='$resolve.getMessagesRecieved' get-msgs-sent='$resolve.getMessagesSent' feedback='$resolve.getFeedbacks'></employee-dashboard>",
 				resolve: {
 					currentAuth: function(auth){
 						return auth.$requireSignIn();
@@ -156,6 +156,12 @@
 						return auth.$requireSignIn().then(function(){
 							var uidKey = auth.$getAuth();
 							return $firebaseArray(DbReference.messageReference(uidKey.uid).child("sent")).$loaded();
+						});
+					},
+					getFeedbacks: function(auth, DbReference, $firebaseArray) {
+						return auth.$requireSignIn().then(function(){
+							var uidKey = auth.$getAuth();
+							return $firebaseArray(DbReference.feedback(uidKey.uid)).$loaded();
 						});
 					}
 				}
